@@ -7,6 +7,11 @@ import {
   Login,
   Landing,
   Error,
+  AllJobs,
+  Stats,
+  Profile,
+  AddJob,
+  Admin,
 } from "./pages";
 
 function App() {
@@ -15,7 +20,14 @@ function App() {
       <Routes>
         <Route path="/" element={<HomeLayout />}>
           <Route index element={<Landing />} />
-          <Route path="dashboard" element={<DashboardLayout />} />
+          <Route path="dashboard" element={<DashboardLayout />}>
+            <Route index element={<AddJob />} />
+            <Route path="all-jobs" element={<AllJobs />} />
+            {/* <Route path="/stats" element={<Stats />} /> */}
+            <Route path="stats" element={<Stats />} />
+            <Route path="profile" element={<Profile />} />
+            <Route path="admin" element={<Admin />} />
+          </Route>
           <Route path="login" element={<Login />} />
           <Route path="register" element={<Register />} />
         </Route>
