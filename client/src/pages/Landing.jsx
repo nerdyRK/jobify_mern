@@ -21,13 +21,13 @@ const Landing = () => {
           <div className="btns grid grid-cols-2">
             <Link
               to="/register"
-              className="bg-primary text-center rounded px-4 py-1 mr-2"
+              className="bg-primary text-center text-white rounded px-4 py-1 mr-2"
             >
               Register
             </Link>
             <Link
               to="/login"
-              className="bg-blue-600 text-center rounded px-4 py-1"
+              className="bg-blue-600 text-white text-center rounded px-4 py-1"
             >
               Login/Guest User
             </Link>
