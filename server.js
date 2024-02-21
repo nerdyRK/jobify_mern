@@ -2,6 +2,7 @@ import * as dotenv from 'dotenv'
 dotenv.config()
 import express from 'express'
 import morgan from 'morgan'
+import mongoose from 'mongoose'
 
 const app=express();
 
@@ -16,8 +17,6 @@ app.use(express.json())
 app.use("/api/v1/jobs",jobRouter)
 
 
-
-
 app.use("*",(req,res)=>{
     res.status(404).json({message:"page not found"})
 })
@@ -28,4 +27,10 @@ app.use((err,req,res,next)=>{
 
 
 let port = process.env.PORT || 5001
-app.listen(port,()=>console.log(`server running at port ${port}`))
+try{
+    await mongoose.connect(process.env.Mongo_URL);
+    app.listen(port,()=>console.log(`server running at port ${port}`))
+}catch(err){
+    console.log(err)
+    process.exit(1);
+}

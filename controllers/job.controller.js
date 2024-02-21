@@ -1,3 +1,4 @@
+import jobModel from "../models/jobModel.js"
 
 let jobs=[{
     id:1,
