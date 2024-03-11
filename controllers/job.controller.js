@@ -1,66 +1,39 @@
-import jobModel from "../models/jobModel.js"
-
-let jobs=[{
-    id:1,
-    company:"Apple",
-    position:"frontend developer"
-},
-{
-    id:2,
-    company:"Xenon Stack",
-    position:"Software developer"
-}
-]
-
+import Job from "../models/jobModel.js"
+import { StatusCodes } from "http-status-codes"
+import { NotFoundError } from "../errors/customErrors.js"
 
 export const getAllJobs=async (req,res)=>{
-    res.status(200).json(jobs)
+    const jobs=await Job.find()
+    res.status(StatusCodes.OK).json({jobs})
 }
 
 export const createJob=async(req,res)=>{
-    const {company,position}=req.body;
-    if(!company || !position){
-        return res.status(400).json({"message":"please provide company and position"})
-    }
-    const id=Math.floor(Math.random()*1000)+1;
-    const newJob={id,...req.body};
-    jobs.push(newJob);
-    res.status(201).json(newJob)
+    const newJob=await Job.create(req.body)
+    res.status(StatusCodes.CREATED).json({newJob})
 }
 
 export const editJob=async(req,res)=>{
-    const {company,position}=req.body;
-    if(!company || !position){
-        return res.status(400).json({"message":"please provide company and position"})
-    }
     let {id}=req.params;
-    let job=jobs.find((j)=> j.id===Number(id));
-    if(!job){
-        return res.status(404).json({"message":"no such job"});
-    }
-    job.company=company
-    job.position=position
-    res.status(200).json({message:"job modified",job})
+    const updatedJob=await Job.findByIdAndUpdate(id, req.body,{
+        new:true
+    });
+    if(!updatedJob) throw new NotFoundError('No job found')
+    res.status(200).json({message:"job modified",job:updatedJob})
 }
 
 export const deleteJob=async(req,res)=>{
     let {id}=req.params;
-    let job=jobs.find((j)=> j.id===Number(id));
-    console.log(job);
-    if(!job){
-        return res.status(404).json({"message":"no such job"});
-    }
-    let newjobs=jobs.filter((j)=> j.id!==job.id);
-    jobs=newjobs;
-    res.status(200).json({message:"job deleted",jobs})
+    const removedJob=await Job.findByIdAndDelete(id)
+    if(!removedJob) throw new NotFoundError('No job found')
+    
+   
+    res.status(StatusCodes.OK).json({message:"job deleted",job:removedJob})
 }
 
 
 export const getJob=async(req,res)=>{
     let {id}=req.params
-    let job=jobs.find((j)=> j.id===Number(id));
-    if(!job){
-        return res.status(404).json({"message":"no such job"});
-    }
-    res.status(200).json(job)
+   const job=await Job.findById(id)
+    if(!job) throw new NotFoundError('No job found')
+    res.status(StatusCodes.OK).json(job)
 }

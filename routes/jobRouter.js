@@ -9,7 +9,7 @@ router.route( "/" )
 
 router.route( "/:id" )
        .get( getJob )
-       .put( editJob )
+       .patch( editJob )
        .delete( deleteJob);
        
 export default router; 
