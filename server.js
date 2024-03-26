@@ -9,6 +9,7 @@ import { errorHandler } from './middlewares/errorHandler.middleware.js'
 const app=express();
 
 import jobRouter from './routes/jobRouter.js';
+import authRouter from './routes/authRouter.js';
 
 
 if(process.env.ENV==="development"){
@@ -17,6 +18,7 @@ if(process.env.ENV==="development"){
 
 app.use(express.json())
 app.use("/api/v1/jobs",jobRouter)
+app.use("/api/v1/auth",authRouter)
 
 
 app.use("*",(req,res)=>{
