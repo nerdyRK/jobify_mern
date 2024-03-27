@@ -20,6 +20,7 @@ export const login=async(req,res)=>{
     res.status(StatusCodes.OK).json({msg:'user logged in'})
 }
 
+
 export const register=async(req,res)=>{
     const isFirstAccount=await  User.countDocuments()===0;
     req.body.role=isFirstAccount?'admin':'user';
@@ -30,3 +31,8 @@ export const register=async(req,res)=>{
     const user=await User.create(req.body);
     res.status(StatusCodes.CREATED).json({msg:"User regisered successfully"});
 }
+
+export  const logout=(req,res)=> {
+   res.clearCookie("token");
+   res.status(StatusCodes.OK).json({ msg: 'Logged out' });
+};

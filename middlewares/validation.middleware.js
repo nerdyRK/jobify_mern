@@ -13,6 +13,9 @@ const withValidationErrors=(validateValues)  =>{
         if(errorMessages[0].startsWith('No job')){
             throw new NotFoundError(errorMessages);
         }
+        if(errorMessages[0].startsWith('not authorized')){
+            throw new UnauthorizedError('not authorized to access this route')
+        }
         throw new BadRequestError(errorMessages)
        }
        next()
@@ -29,13 +32,16 @@ const withValidationErrors=(validateValues)  =>{
 
     export const validateIdParam=withValidationErrors([
             param("id")
-            .custom(async(value)=>{
+            .custom(async(value,{req})=>{
                 const isValidId=mongoose.Types.ObjectId.isValid(value);
                 if(!isValidId) throw new BadRequestError('Invalid id format')
 
                 const job =await Job.findById(value); 
                 
                 if(!job) throw new NotFoundError('No job found with this id');
+                const isAdmin = req.user.role==='admin'
+                const isOwner=req.user.userId===job.createdBy.toString()
+                if(!isAdmin&&!isOwner) throw new UnauthorizedError('not authorized to access this route')
             })
             
         ])
