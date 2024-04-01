@@ -18,4 +18,12 @@ const userSchema=new Schema({
     }
 },{timestamps:true})
 
+//* to not add password in response + called implicitly
+userSchema.methods.toJSON=function(){
+    const obj=this.toObject();
+    delete obj.password;
+    console.log(1234);
+    return obj;
+}
+
 export default mongoose.model('User',userSchema);

@@ -39,6 +39,7 @@ const withValidationErrors=(validateValues)  =>{
                 const job =await Job.findById(value); 
                 
                 if(!job) throw new NotFoundError('No job found with this id');
+                //*only the owner or admin should be able to edit or delete a job
                 const isAdmin = req.user.role==='admin'
                 const isOwner=req.user.userId===job.createdBy.toString()
                 if(!isAdmin&&!isOwner) throw new UnauthorizedError('not authorized to access this route')
@@ -62,3 +63,15 @@ const withValidationErrors=(validateValues)  =>{
             body("email").notEmpty().withMessage("email is required").isEmail().withMessage('Invalid email format'),
             body("password").notEmpty().withMessage("Password is required").trim()
             ])
+            
+            export const validateUpdateUserInput=withValidationErrors([
+            body("username").notEmpty().withMessage("Username is required").trim(),
+            body("email").notEmpty().withMessage("email is required").isEmail().withMessage('Invalid email format').custom(async(email,{req})=>{
+                const user=await User.findOne({email});
+                if(user && user._id.toString()!==req.user.userId){
+                    throw new BadRequestError('email already exist')
+                }
+            }),
+           
+            body("location").notEmpty().withMessage("location is required"),
+        ]) 
